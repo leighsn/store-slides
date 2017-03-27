@@ -42,16 +42,20 @@
 # [fit] What's NOT Easy?
 #[fit] **DATA LOADING**
 ---
+[.build-lists: true]
 ^Now raise your hand if you think the person sitting next to you does it in the same way
 #[fit]  **What is Data Loading?**
-###[fit] Data flow from network,
-###[fit] through caches and transformations
+###[fit] Flow of data from an external 
+###[fit] system to a user's screen
 ---
+[.build-lists: true]
 ##[fit] **Loading is complicated**
-### How do I fetch?
-### Where do I parse?
-### When do I cache?
+- When do I fetch?
+- Where do I parse?
+- How do I cache?
+
 ---
+
 #[fit]**What makes it complicated?**
 ##  Rotation is a
 ## special snowflake
@@ -73,12 +77,12 @@
 ## agnostic of where it comes from or how it is needed
 ---
 ^Activities should deal with activity stuff, presenters should deal with presenting. Stores should be used to store data
-## Activities and presenters should stop retaining data
-### We should follow **single responsibility principles**
+## Activities and presenters are not retainers
+### follow **single responsibility principles**
 
 
 ---
-#[fit] Offline should not be an afterthought
+#[fit] Offline as first class citizen
 ### Caching should be standard,
 ## **not the exception**
 ---
@@ -110,7 +114,7 @@
 ---
 
 ## **Repository Pattern**
-### Separate the logic that retrieves the data and maps it to the entity model from the [view] logic that acts on the model.
+### Separate the logic that retrieves the data and maps it to the [view] model from the [view] logic that acts on the model.
 ### The repository mediates between the data layer and the [view] layer of the application.
 ---
 
@@ -138,7 +142,7 @@
 ### [fit] **The Store manages the rest**
 
 ---
-##How to use Stores
+##Store API
 ```java
 Observable<T> get( V key);
 
@@ -340,7 +344,8 @@ RecordProvider<Key> {
 ---
 #[fit]Data Flow with a Persister
 ![fit inline](https://github.com/nytm/Store/raw/master/Images/store-5.jpg)
-
+---
+## Stores Enfource Unidirectional Data Flow
 ---
 ##We have our components!
 ##Let's build and open a store
