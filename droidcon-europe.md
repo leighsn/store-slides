@@ -2,38 +2,33 @@
 # [fit] **Data Loading Made Easy**
 # [fit] _**With Mike Nakhimovich, NY Times**_
 ---
-# [fit] Common Problems in Android
-## [fit] How to Solve them with Store
----
+
 ^NY Times App, Consulting Apps, Hack Day Apps, Apps for Blog Posts and Talks
 
 # [fit] We _**:heart:**_
 # [fit] Making Apps
 ---
-
-# [fit] Open Source Makes
-# [fit] Life Easier
-
----
-#[fit] Networking
-# [fit] Volley, Retrofit, Okhttp
----
-#[fit] Storage
-#[fit] Firebase, Realm, SqlBrite
----
-#[fit] Parsers
-#[fit] Jackson, Gson, Moshi
-
----
-#[fit] :heart_eyes:
-#[fit] Why We Love
+#[fit] &
+#[fit] We _**:heart:**_
 #[fit]Open Source
 ---
-# [fit] Standardization
-# [fit] Makes onboarding easier
+# [fit] Why?
+# [fit] Open Source Makes Life Easier
+# [fit] We have top notch Fetchers, Parsers & Persisters
 ---
+#[fit] Fetchers
+# [fit] ~~HTTPURLCONNECTION~~ Volley, Retrofit, Okhttp
+---
+#[fit] Persisters
+#[fit] ~~Shared Prefs~~ Firebase, Realm, SqlBrite/SqlDelight
+---
+#[fit] Parsers
+#[fit] ~~JSONObject~~ Jackson, Gson, Moshi
+---
+# [fit] Open Source has made life easier
+—
 # [fit] New Job,
-#[fit] Same Patterns
+#[fit] Same Libraries
 ---
 # [fit] Fewer compromises doing consulting
 ---
@@ -41,82 +36,449 @@
 ---
 # [fit] Interns Have Resources
 ---
-# [fit] What's NOT Standard?
+
+# [fit] What's NOT Easy?
 #[fit] DATA LOADING
 ---
 ^Now raise your hand if you think the person sitting next to you does it in the same way
-#[fit] How does your UI
-#[fit] load and retain data?
+#  What is Data Loading?
+### Data Flow from Network, through caches and transformations
 ---
-#[fit] Activity as
-#[fit] Data Manager
+#Loading is complicated
+##How do I fetch?
+##Where do I parse?
+##When do I cache? 
 ---
-#[fit]The Good:
-#[fit]Simple Rotation:
-#[fit]
-```java
-getLastNonConfigurationInstance()
-```
----
-#[fit]The Bad:
-#[fit]Bundle size limits
-```java
-TransactionTooLargeException
-```
-:scream:
+#[fit]What makes it complicated?
+#  Rotation is a special snowflake **_:snowflake:_**
+—
+
+### Some Apps avoid it,
+### Others use deprecated APIs
+###  Loaders & Content Providers require a Advanced degree to understand
+### And the rest seem to serialize the world.
 
 ---
-
-# Presenter as Requester and Retainer
-
----
-#[fit]Handle Rotation
-# Serialize the Presenter?
-# Make global and rebind?
-
----
-
-> Rotation is a special snowflake **_:snowflake:_**
---Me
-
----
-# New York Times built Store to simplify our data operations
-# github.com/NYTimes/store
+# New York Times built **Store** to simplify data loading
+#### github.com/NYTimes/store
 ---
 # [fit]Goals
 ---
-# Data should survive configuration changes
-
----
-# Agnostic of where it comes from or how it is needed
+## Data should survive configuration change
+## Agnostic of where it comes from or how it is needed
 ---
 ^Activities should deal with activity stuff, presenters should deal with presenting. Stores should be used to store data
-# Activites and presenters should stop retaining data
+## Activites and presenters should stop retaining data
+### We should follow single responsibility principles
 
+ 
 ---
-
-# We will follow single responsibility principles
----
-#[fit] standardize caching
-# We want a simple way to fetch from cache. If not there, we get from network
----
-#[fit] Offline First
-# Need a way to pre-fetch and cache data
+#[fit] Offline Should not be an afterthought
+### Caching should be the standard not the exception
 ---
 ^Our team becomes 50% bigger every summer
-#[fit] KISS
-# API should be simple enough for an intern to use
+#[fit] No Comp Sci Degree should be needed 
+## API should be simple enough for an intern to use yet robust enough for every data load.
 ---
-# Need to be robust
-# Stores should be flexible enough that devs can use in any app they build
+# [fit] So what's our Data Story at NY Times?
 ---
-# [fit] How does our UI
-# [fit]interact with data?
----
-#[fit] 80%
+#[fit] 80% case
 #[fit] Want data,
 #[fit] don't care from where
 ---
 #[fit] Other Times
-# Want fresh data
+# Want fresh data for background updates and pull to refresh
 ---
+# [fit] Data is dependent on each other 
+# [fit] Data Calls should be too
+---
+# [fit] requests need to be async and reactive
+# [fit] with a way to force a refresh
+—
+# Performance is important
+###We load huge amounts of data for a lightweight app, parsing should be done efficiently and minimally.
+—
+# Overall Mission
+### Create reactive, persistent, Data Stores to simplify data loading
+—
+# From Pattern to library
+### We used Repository Pattern to separate the logic that retrieves the data and maps it to the entity model from the view logic that acts on the model.
+—
+#What Does this Achieve?
+### Maximize the amount of code that can be tested with automation by isolating the data layer. 
+####Also makes it easier to have multiple devs working on same feature
+—
+# Why Repository?
+### Data source from many locations will be centrally managed with consistent access rules and logic.
+—
+# How did NY Times implement Repository Pattern?
+### https://github.com/NYTimes/Store
+
+—
+# What is a Store?
+###  A class that manages the fetching, parsing, storage, and retrieval of a single piece of data.
+---
+# Store Manages Data
+## You tell it Where data comes from, Where to Cache it, How to parse it. Stores manage the rest
+---
+##How to use Stores
+```java
+Observable<T> get( V key);
+
+Observable<T> fetch(V key)
+
+Observable<T> getRefreshing(V key)
+
+Observable<T> stream()
+
+void clear(V key)
+
+```
+---
+#80% Use Case
+```java 
+public final class PizzaPresenter {
+   Store<Pizza, String> store;
+   void onLoad() {
+       store.get("cheese")
+               .subscribe(pizza -> getView()
+               .setData(pizza));
+       }
+   }
+```
+---  
+# [fit]How does store route the request?
+ ![inline fit](https://github.com/nytm/Store/raw/master/Images/store-1.jpg)  
+
+---
+#[fit] Fetch When you want to skip cache
+```java
+public class PizzaPresenter {
+   Store<Pizza, String> store;
+   
+   void onPTR() {
+      store.fetch("veggie")
+              .subscribe(pizza -> 
+              	getView().setData(pizza));
+          }
+      }
+```
+---
+# [fit]How does store route the request?
+![fit inline](https://github.com/nytm/Store/raw/master/Images/store-2.jpg)
+
+---
+# [fit] Stream listens for events
+```java
+public class PizzaBar {
+   Store<Pizza, String> store;
+   void showPizzaDone() {
+       store.stream()
+       .subscribe(pizza -> 
+          getView().showSnackBar(pizza));
+	}
+}
+```
+---
+# [fit]How does store route the request?
+# [fit]Insert image for Stream
+---
+# [fit] Get Refreshing - Update on Clear
+```java
+public class PriceList {
+   Store<List<Double>, String> prices;
+   void pizzaPrices() {
+       store
+          .getRefreshing(“prices”)
+          .subscribe(prices -> display(prices));
+      }
+   
+    void updatePrices(){
+	api.updatePizzaPrices(prices)
+	   .doOnNext(response->store.clear(“pizza”);
+	}
+```
+---
+# [fit]How does store route the request?
+# [fit]Insert image for Stream
+---
+#[fit] Build a Store by
+###implementing and supplying Interfaces to a Builder which opens a Store with a consistent Public API.
+---
+# Interfaces
+```java
+Fetcher<Raw, Key> 
+   Observable<Raw> fetch(Key key);
+
+Persister<Raw, Key> 
+   Observable<Raw> read(Key key);
+   Observable<Boolean> write(Key key, Raw raw);
+
+Parser<Raw, Parsed> extends Func1<Raw, Parsed> 
+ 	  Parsed call(Raw raw);
+```
+---
+# [fit]Fetcher Defines how a store will get new data
+```java
+Fetcher<Pizza,String> pizzaFetcher = 
+new Fetcher<Pizza, String>() {
+   public Observable<Pizza> fetch(String topping) {
+       return pizzaSource.fetch(topping);
+};
+```
+---
+#You can easily make an Observable
+```java
+Fetcher<Pizza,String> pizzaFetcher = 
+topping -> 
+Observable.fromCallable(() -> client.fetch(topping));
+```
+---
+# [fit]Since APIs don't return Pojos
+# [fit] we will implement
+# [fit] Data Parsers
+---
+# [fit] Some Parsers read streams
+```java 
+Parser<BufferedSource, Pizza> parser = source -> {
+   InputStreamReader reader = 
+   new InputStreamReader(source.inputStream());
+   return gson.fromJson(reader, Pizza.class);
+}
+```
+---
+#[fit] Others Make View Models
+```java
+Parser<Pizza, PizzaBox> boxParser = new Parser<>() {
+   public PizzaBox call(Pizza pizza) {
+       return new PizzaBox(pizza);
+   }
+};
+```
+---
+# [fit] MiddleWare is for the common cases
+```java
+Parser<BufferedSource, Pizza> parser 
+= GsonParserFactory.createSourceParser(gson,Pizza.class)
+
+
+
+
+
+'com.nytimes.android:middleware:CurrentVersion'
+'com.nytimes.android:middleware:-jackson:CurrentVersion'
+'com.nytimes.android:middleware-moshi:CurrentVersion'
+
+```
+---
+#[fit]Data Flow with a Parser
+![fit inline](https://github.com/nytm/Store/raw/master/Images/store-3.jpg)
+
+---
+#[fit]Remember we are offline first!
+#[fit] Let's get a Persister
+---
+#[fit] File System Record Persister
+```java
+FileSystemRecordPersister.create(fileSystem,
+key -> "prefix"+key
+1, TimeUnit.DAYS);
+
+public interface PathResolver<T> {
+   String resolve( T key);
+}
+```
+---
+# File System!
+```java
+ interface FileSystem {
+   BufferedSource read(String var) throws FileNotFoundException;
+   void write(String path, BufferedSource source) throws IOException;
+   void delete(String path) throws IOException;
+}
+
+compile 'com.nytimes.android:filesystem:CurrentVersion'
+
+```
+---
+# Don't like our persisters? 
+# No Problem! You can implement your own
+---
+#[fit] Persister interfaces
+```java
+
+Persister<Raw, Key> {
+   Observable<Raw> read(Key key);
+   Observable<Boolean> write(Key key, Raw raw);
+ }
+
+Clearable<Key> {
+    void clear(Key key);
+}
+
+RecordProvider<Key> {
+    RecordState getRecordState( Key key);
+```
+---
+#[fit]Data Flow with a Persister
+![fit inline](https://github.com/nytm/Store/raw/master/Images/store-5.jpg)
+
+---
+#We have our parts now let's Build and open a store
+---
+# MultiParser
+```java
+List<Parser> parsers=new ArrayList<>();
+parsers.add(boxParser);
+parsers.add(GsonParserFactory.createSourceParser(gson, Pizza.class));
+```
+---
+# Store Builder
+```java
+List<Parser> parsers=new ArrayList<>();
+parsers.add(boxParser);
+parsers.add(GsonParserFactory.createSourceParser(gson, Pizza.class));
+
+StoreBuilder<String,BufferedSource,Pizza> parsedWithKey()
+
+```
+---
+# Add Our Parser
+```java
+List<Parser> parsers=new ArrayList<>();
+parsers.add(boxParser);
+parsers.add(GsonParserFactory.createSourceParser(gson, Pizza.class));
+
+StoreBuilder<String,BufferedSource,Pizza> parsedWithKey()
+       .fetcher(topping -> pizzaSource.fetch(topping))
+
+```
+---
+# Now Our Persister
+```java
+List<Parser> parsers=new ArrayList<>();
+parsers.add(boxParser);
+parsers.add(GsonParserFactory.createSourceParser(gson, Pizza.class));
+
+StoreBuilder<String,BufferedSource,Pizza> parsedWithKey()
+       .fetcher(topping -> pizzaSource.fetch(topping))
+       .persister( FileSystemRecordPersister.create( fileSystem,
+        	key -> "prefix"+key, 1, TimeUnit.DAYS))
+
+```
+---
+# And Our Parsers
+```java
+List<Parser> parsers=new ArrayList<>();
+parsers.add(boxParser);
+parsers.add(GsonParserFactory.createSourceParser(gson, Pizza.class));
+
+StoreBuilder<String,BufferedSource,Pizza> parsedWithKey()
+       .fetcher(topping -> pizzaSource.fetch(topping))
+       .persister( FileSystemRecordPersister.create( fileSystem,
+        	key -> "prefix"+key, 1, TimeUnit.DAYS))
+       .parsers(parsers)
+```
+---
+# Time to Open a Store
+```java
+List<Parser> parsers=new ArrayList<>();
+parsers.add(boxParser);
+parsers.add(GsonParserFactory.createSourceParser(gson, Pizza.class));
+
+Store<Pizza, String> pizzaStore = 
+StoreBuilder<String,BufferedSource,Pizza> parsedWithKey()
+       .fetcher(topping -> pizzaSource.fetch(topping))
+       .persister( FileSystemRecordPersister.create( fileSystem,
+			key -> "prefix"+key, 1, TimeUnit.DAYS))
+       .parsers(parsers)
+       .open();
+```
+---
+# [fit]Configure for  use case
+---
+#[fit] Configuring Memory Policy
+```java
+StoreBuilder
+       .<String, BufferedSource, Pizza>parsedWithKey()
+       .fetcher(topping -> pizzaSource.fetch(topping))
+       .memoryPolicy(MemoryPolicy
+               .builder()
+               .setMemorySize(10)
+               .setExpireAfter(TimeUnit.HOURS.toSeconds(24))
+               .setExpireAfterTimeUnit(TimeUnit.SECONDS)
+               .build())
+       .open()
+```
+---
+#[fit] Refresh On Stale - BackFilling the Cache
+```java
+Store<Pizza, String> pizzaStore = StoreBuilder
+       .<String, BufferedSource, Pizza>parsedWithKey()
+       .fetcher(topping -> pizzaSource.fetch(topping))
+       .parsers(parsers)
+       .persister(persister)
+       .refreshOnStale()
+       .open();
+```
+---
+#[fit] Network Before Stales Policy
+```java
+Store<Pizza, String> pizzaStore = StoreBuilder
+       .<String, BufferedSource, Pizza>parsedWithKey()
+       .fetcher(topping -> pizzaSource.fetch(topping))
+       .parsers(parsers)
+       .persister(persister)
+       .refreshOnStale()
+       .open();
+```
+---
+# [fit]Bonus: How We made Store
+---
+## RxJava for Interfaces and Functional Concepts
+```java
+public Observable<Parsed> get(@Nonnull final Key key) {
+        return Observable.concat(
+            cache(key),
+            fetch(key)
+        ).take(1);
+    }
+
+    public Observable<Parsed> getRefreshing(@Nonnull final Key key) {
+        return get(key)
+            .compose(repeatOnClear(refreshSubject, key));
+    }
+```
+---
+#Guava Caches for in Memory Cache
+```
+ memCache = CacheBuilder
+            .newBuilder()
+            .maximumSize(maxSize())
+            .expireAfterWrite(expireAfter(),timeUnit())
+            .build();
+```
+---
+# And For Inflight Throttler
+```java
+inFlightRequests = CacheBuilder
+                .newBuilder()
+                .build();
+
+```
+` compile 'com.nytimes.android:cache:CurrentVersion'`
+
+###Why Guava Caches? They will block across threads saving precious MBs of downloads when making same requests in parallel
+
+---
+#FileSystem:
+###Built using OKIO to allow streaming from Network to disk & disk to parser
+####On Fresh Install NY Times app successfully downloads and caches 60mb of data (insert emoji)
+
+---
+#Finishing Thoughts
+### *Make Stores Singleton and share them
+### *UI should maintain only keys to data
+### *Stores can be subclasses (RealStore)
+### *Mention stores depending on each other?
+### *Would love contributions!
