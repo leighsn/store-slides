@@ -5,108 +5,126 @@
 
 ^NY Times App, Consulting Apps, Hack Day Apps, Apps for Blog Posts and Talks
 
-# [fit] We _**:heart:**_
+# [fit] We **:heart:**
 # [fit] Making Apps
 ---
-#[fit] We _**:heart:**_
+#[fit] We **:heart:**
 #[fit] Open Source
 ---
-# [fit] Why?
+# [fit] Why do we **:heart:** it?
 # [fit] Open Source Makes Life Easier
-# [fit] **We have top notch Fetchers, Parsers & Persisters**
+# [fit] **We have great ways to Fetch, Parse and Persist Data**
 ---
-#[fit] **Fetchers**
-# [fit] ~~HTTPURLCONNECTION~~ Volley, Retrofit, Okhttp
+#[fit] Fetchers
+# [fit] ~~**HTTPURLCONNECTION**~~ 
+# [fit] Volley, Retrofit, Okhttp
 ---
-#[fit] **Persisters**
-#[fit] ~~Shared Prefs~~ Firebase, Realm, SqlBrite/SqlDelight
+#[fit] Persisters
+#[fit] ~~**Shared Preferences**~~ 
+#[fit] Firebase, Realm, SqlBrite/SqlDelight
 ---
-#[fit] **Parsers**
-#[fit] ~~JSONObject~~ Jackson, Gson, Moshi
+#[fit] Parsers
+#[fit] ~~**JSONObject**~~ 
+#[fit] Jackson, Gson, Moshi
 ---
-# [fit] Other Benefits
-# [fit] of Open Source
+# [fit] How does this 
+# [fit] **benefit** you?
 —
 # [fit] New Job,
-# [fit] Same Libraries
----
-# [fit] Fewer compromises
-#[fit] doing consulting
+# [fit] **Same** Libraries
 ---
 # [fit] Shared knowledge
-#[fit] in community
+#[fit] in **community**.
 ---
-# [fit] Interns have resources
+# [fit] Interns have 
+# [fit] resources to look at
 ---
 
-# [fit] What's NOT Easy?
+#[fit] What's NOT Easy?
 #[fit] **DATA LOADING**
 ---
 ^Now raise your hand if you think the person sitting next to you does it in the same way
 #[fit]  **What is Data Loading?**
-###[fit] Data flow from network,
-###[fit] through caches and transformations
+# The Act of getting data from an external system to a user's screen
 ---
-##[fit] **Loading is complicated**
-### How do I fetch?
-### Where do I parse?
-### When do I cache?
+#[fit] **Loading is complicated**
+# How do I fetch?
 ---
-#[fit]**What makes it complicated?**
-##  Rotation is a
-## special snowflake
-# **_:snowflake:_**
+#[fit] **Loading is complicated**
+# How do I fetch?
+# Where do I parse?
+---
+#[fit] **Loading is complicated**
+# How do I fetch?
+# Where do I parse?
+# When do I cache?
+---
+#[fit]**Why is it Complicated?**
+#[fit] Rotation is a special 
+#[fit]snowflake  **_:snowflake:_**
 —
 
-### Some Apps avoid it
-### Others use deprecated APIs
-### Loaders & Content Providers require an advanced degree to understand
-### And the rest seem to serialize the world
+## Some Apps avoid it
+—
+
+## Some Apps avoid it
+## Others use deprecated APIs
+—
+
+## Some Apps avoid it
+## Others use deprecated APIs
+## Loaders & Content Providers require an advanced degree to understand
+—
+
+## Some Apps avoid it
+## Others use deprecated APIs
+## Loaders & Content Providers require an advanced degree to understand
+## The rest seem to serialize the world
 
 ---
 # New York Times built **Store** to simplify data loading
-#### github.com/NYTimes/store
+## github.com/NYTimes/store
 ---
-# [fit]Goals
+# [fit] **Goals**
 ---
-## Data should survive configuration changes
-## agnostic of where it comes from or how it is needed
+# **Data** should survive configuration changes,
+# agnostic of where it comes from or how it is needed
 ---
 ^Activities should deal with activity stuff, presenters should deal with presenting. Stores should be used to store data
-## Activities and presenters should stop retaining data
-### We should follow **single responsibility principles**
+# Activities and presenters should stop retaining data.
+## We should follow **single responsibility principles**
 
 
 ---
 #[fit] Offline should not be an afterthought
-### Caching should be standard,
-## **not the exception**
+#Caching should be the standard
+## **not the exception!**
 ---
 ^Our team becomes 50% bigger every summer
-## API should be simple enough for an intern to use yet robust enough for every data load
+#**Interface** should be **simple** enough for an intern to use, yet **robust** enough for every data load.
 ---
-# [fit] So what's our Data Story at NY Times?
+# [fit] So what's our 
+# [fit]Data Story at **NY Times**?
 ---
-#[fit] 80% case:
-#[fit] Want data,
-#[fit] don't care from where
+#[fit] **80% case**:
+# Want data, don't care if it comes from cache
 ---
-#[fit] Other times,
-## Want fresh data for background updates and pull to refresh
+#[fit] Other times:
+# Want fresh data for **background updates** and **pull to refresh**
 ---
-# [fit] Data is dependent on each other
-# [fit] Data calls should be too
+# Data is dependent on each other,
+# Data calls should be too
 ---
-# [fit] Requests need to be async and reactive
-# [fit] With a way to force a refresh
+# [fit] Requests need to be 
+#[fit]**async** & **reactive**
 ---
 # Performance is important
-### We load huge amounts of data for a lightweight app
+# We load **HUGE** amounts of data for a tiny app
 ---
-## Parsing should be done efficiently and minimally
+# **Parsing** should be done efficiently and minimally
 ---
 # Mission
-### Create reactive, persistent, Data Stores to simplify data loading
+# Create reactive, persistent, Data Stores to **simplify** data loading
 ---
 
 ## **Repository Pattern**
@@ -114,31 +132,31 @@
 ### The repository mediates between the data layer and the [view] layer of the application.
 ---
 
-## **Why Repository?**
-### Maximize the amount of code that can be tested with automation by isolating the data layer
+# **Why Repository?**
+# Maximize the amount of code that can be tested with automation by isolating the data layer
 ---
-## **Why Repository?**
-###Makes it easier to have multiple devs working on same feature
+# **Why Repository?**
+#Makes it easier to have multiple devs working on same feature
 ---
-## **Why Repository?**
-### Data source from many locations will be centrally managed with consistent access rules and logic
+# **Why Repository?**
+# Data source from many locations will be centrally managed with consistent access rules and logic
 ---
 
-## **Our Implementation**
-### https://github.com/NYTimes/Store
-
+# **Our Implementation**
+## https://github.com/NYTimes/Store
+###(How'd we do?)
 —
 # What is a **Store?**
-###  A class that manages the fetching, parsing, and storage of a specific data model.
+# A class that manages the fetching, parsing, and storage of a specific data model.
 ---
 ### [fit]**You Tell a Store:**
-### [fit] How to fetch
-### [fit] Where to cache
-### [fit] How to parse
+### [fit] How to **fetch**
+### [fit] Where to **cache**
+### [fit] How to **parse**
 ### [fit] **The Store manages the rest**
 
 ---
-##How to use Stores
+##How to use Store
 ```java
 Observable<T> get( V key);
 
@@ -284,7 +302,7 @@ Parser<BufferedSource, Pizza> parser
 
 
 'com.nytimes.android:middleware:CurrentVersion'
-'com.nytimes.android:middleware:-jackson:CurrentVersion'
+'com.nytimes.android:middleware:jackson:CurrentVersion'
 'com.nytimes.android:middleware-moshi:CurrentVersion'
 
 ```
@@ -448,7 +466,7 @@ Store<Pizza, String> pizzaStore = StoreBuilder
        .fetcher(topping -> pizzaSource.fetch(topping))
        .parsers(parsers)
        .persister(persister)
-       .refreshOnStale()
+       .networkBeforeStale()
        .open();
 ```
 ---
