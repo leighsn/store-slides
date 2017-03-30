@@ -1,6 +1,6 @@
 # [fit] Store
-# [fit] **Data Loading Made Easy**
-# [fit] _**With Mike Nakhimovich, NY Times**_
+# [fit] _**Data Loading Made Easy**_
+# [fit] **Mike Nakhimovich - NY Times**
 ---
 
 ^NY Times App, Consulting Apps, Hack Day Apps, Apps for Blog Posts and Talks
@@ -11,134 +11,160 @@
 #[fit] We _**:heart:**_
 #[fit] Open Source
 ---
-# [fit] Why?
+# [fit] Why do we **:heart:** it?
 # [fit] Open Source Makes Life Easier
-# [fit] **We have top notch Fetchers, Parsers & Persisters**
 ---
-#[fit] **Fetchers**
-# [fit] ~~HTTPURLCONNECTION~~ Volley, Retrofit, Okhttp
+#Developers Are Lazy
+# [fit] Open Source has simplified our lives
 ---
-#[fit] **Persisters**
-#[fit] ~~Shared Prefs~~ Firebase, Realm, SqlBrite/SqlDelight
+#[fit] Networking is easier through better Fetchers
+# [fit] ~~**HTTPURLCONNECTION**~~ 
+# [fit] Volley, Retrofit, Okhttp
 ---
-#[fit] **Parsers**
-#[fit] ~~JSONObject~~ Jackson, Gson, Moshi
+#[fit] Data Storage/Persisters for Offline
+#[fit] ~~**Shared Preferences**~~ 
+#[fit] Firebase, Realm, SqlBrite/SqlDelight
 ---
-# [fit] Other Benefits
-# [fit] of Open Source
+#[fit] Parsers for Transformations
+#[fit] ~~**JSONObject**~~ 
+#[fit] Jackson, Gson, Moshi
+---
+# [fit] How does this 
+# [fit] **benefit** you?
 —
+# [fit] You don't need to reinvent the wheel
 # [fit] New Job,
-# [fit] Same Libraries
+# [fit] **Same** Libraries
 ---
-# [fit] Fewer compromises
-#[fit] doing consulting
----
-# [fit] Shared knowledge
-#[fit] in community
----
-# [fit] Interns have resources
+#[fit] Shared knowledge in **community**
+# [fit] We have 
+# [fit] resources to look at
 ---
 
-# [fit] What's NOT Easy?
+#[fit] What's NOT Easy?
 #[fit] **DATA LOADING**
+#[fit] Everyone does it differently
 ---
 ^Now raise your hand if you think the person sitting next to you does it in the same way
 #[fit]  **What is Data Loading?**
-###[fit] Data flow from network,
-###[fit] through caches and transformations
+# The Act of getting data from an external system to a user's screen
 ---
-##[fit] **Loading is complicated**
-### How do I fetch?
-### Where do I parse?
-### When do I cache?
+^We know that we're gonna use these great network libraries but what is actually doing the network call? does my activity really need to make it?
+#[fit] **Loading is complicated** because
+#[fit] Rotation Handling is a special 
+#[fit]snowflake  **_:snowflake:_**
 ---
-#[fit]**What makes it complicated?**
-##  Rotation is a
-## special snowflake
-# **_:snowflake:_**
+^there are apps with 100m downloads that don't handle rotation
+### Some Apps avoid it
+---
+^getLastCustomNonConfigurationInstance
+### Some Apps avoid it
+### Others use deprecated APIs
 —
 
 ### Some Apps avoid it
 ### Others use deprecated APIs
 ### Loaders & Content Providers require an advanced degree to understand
-### And the rest seem to serialize the world
+—
+
+### Some Apps avoid it
+### Others use deprecated APIs
+### Loaders & Content Providers require an advanced degree to understand
+### Serializing Presenters is not scalable
 
 ---
 # New York Times built **Store** to simplify data loading
-#### github.com/NYTimes/store
+## github.com/NYTimes/store
 ---
-# [fit]Goals
+# [fit] **Goals**
 ---
-## Data should survive configuration changes
-## agnostic of where it comes from or how it is needed
+# **Data** should survive configuration changes,
+#[fit] agnostic of where it comes from or how it is needed
 ---
 ^Activities should deal with activity stuff, presenters should deal with presenting. Stores should be used to store data
-## Activities and presenters should stop retaining data
-### We should follow **single responsibility principles**
+# Activities and presenters should stop retaining MBs of data.
+#[fit] follow **single responsibility principles**
 
 
 ---
-#[fit] Offline should not be an afterthought
-### Caching should be standard,
-## **not the exception**
+# Offline as a configuration
+#[fit]Caching should be the standard not the exception!
+#[fit] Developer should be able to make something cachable with 
 ---
 ^Our team becomes 50% bigger every summer
-## API should be simple enough for an intern to use yet robust enough for every data load
+#API should be **simple** enough for an intern to use, yet **robust** enough for every data load.
 ---
-# [fit] So what's our Data Story at NY Times?
+# [fit] Our Use Cases
+# [fit]Data Story at **NY Times**
 ---
-#[fit] 80% case:
-#[fit] Want data,
-#[fit] don't care from where
+#[fit] **80% case**:
+# Need data, don't care if it fresh or cached
 ---
-#[fit] Other times,
-## Want fresh data for background updates and pull to refresh
+#[fit] Fetch from outside
+## Want fresh data: 
+##**background updates** and **pull to refresh**
 ---
-# [fit] Data is dependent on each other
-# [fit] Data calls should be too
+# Data is dependent on each other,
+# Data calls should be too
+##For example: Anytime we fetch an article we want comments too
 ---
-# [fit] Requests need to be async and reactive
-# [fit] With a way to force a refresh
+# [fit] Requests need to be 
+#[fit]**async** & **reactive**
 ---
 # Performance is important
-### We load huge amounts of data for a lightweight app
+## We load **HUGE** amounts of data for a small app
+###New calls should hook into in flight responses
 ---
-## Parsing should be done efficiently and minimally
+# **Parsing** should be done efficiently and minimally
+#[fit] Parse once and cache the result for future calls
 ---
-# Mission
-### Create reactive, persistent, Data Stores to simplify data loading
+# How did we achieve our Goals?
+###By creating reactive and persistent Data Stores that follow the Repository Pattern
 ---
 
-## **Repository Pattern**
-### Separate the logic that retrieves the data and maps it to the entity model from the [view] logic that acts on the model.
+#[fit] **Repository Pattern?**
+### Separate the logic that retrieves the data and maps it to the [view] model from the [view] logic that acts on the model.
 ### The repository mediates between the data layer and the [view] layer of the application.
 ---
 
-## **Why Repository?**
-### Maximize the amount of code that can be tested with automation by isolating the data layer
+# **Why Repository?**
+# Maximize the amount of code that can be tested with automation by isolating the data layer
 ---
-## **Why Repository?**
-###Makes it easier to have multiple devs working on same feature
+# **Why Repository?**
+#Makes it easier to have multiple devs working on same feature
 ---
-## **Why Repository?**
-### Data source from many locations will be centrally managed with consistent access rules and logic
+# **Why Repository?**
+# Data source from many locations will be centrally managed with consistent access rules and logic
 ---
 
-## **Our Implementation**
-### https://github.com/NYTimes/Store
-
+# **Our Implementation**
+## https://github.com/NYTimes/Store
+###(How'd we do?)
 —
 # What is a **Store?**
-###  A class that manages the fetching, parsing, and storage of a specific data model.
+## A class that manages the fetching, parsing, and storage of a specific data model
+#### Stores bring together all those great open source libs from earlier
 ---
-### [fit]**You Tell a Store:**
-### [fit] How to fetch
-### [fit] Where to cache
-### [fit] How to parse
-### [fit] **The Store manages the rest**
+# [fit]**You Tell a Store:**
+#  What to **fetch**
+---
+# [fit]**You Tell a Store:**
+#  What to **fetch**
+#  Where to **cache**
+---
+# [fit]**You Tell a Store:**
+#  What to **fetch**
+#  Where to **cache**
+# How to **parse**
+---
+# [fit]**You Tell a Store:**
+#  What to **fetch**
+#  Where to **cache**
+# How to **parse**
+# [fit] The Store manages the rest
 
 ---
-##How to use Stores
+##Stores Have An Observable API
 ```java
 Observable<T> get( V key);
 
@@ -152,10 +178,10 @@ void clear(V key)
 
 ```
 ---
-#80% Use Case
+#Handling our 80% Use Case
 ```java
 public final class PizzaPresenter {
-   Store<Pizza, String> store;
+   Store<Pizza, String> pizzaStore;
    void onLoad() {
        store.get("cheese")
                .subscribe(pizza -> getView()
@@ -168,13 +194,47 @@ public final class PizzaPresenter {
  ![inline fit](https://github.com/nytm/Store/raw/master/Images/store-1.jpg)  
 
 ---
+#Handling Configuration Change
+## Save/Restore only your 🧀 and get your 🍕  
+```java
+public final class PizzaPresenter {
+   Store<Pizza, String> pizzaStore;
+   void onAfterRotate(String topping) {
+       store.get(topping)
+               .subscribe(pizza -> getView()
+               .setData(pizza));
+       }
+   }
+```
+##Stores retain data UI Maintains Keys
+---
+# What we gain?:
+###Presenters don't need to be retained
+###Don't need to worry about TransactionTooLargeExceptions
+###Data Doesn't need to be Parcelable
+
+---
+
+##Block if not present:
+```java
+for(i=0;i<20;i++){
+   store.get(topping)
+               .subscribe(pizza -> getView()
+               .setData(pizza));
+}
+```
+##Many concurrent Get requests will still only hit network once
+
+---
+
+
 #[fit] Fetch when you want to skip cache
 ```java
 public class PizzaPresenter {
    Store<Pizza, String> store;
 
    void onPTR() {
-      store.fetch("veggie")
+      store.fetch("cheese")
               .subscribe(pizza ->
               	getView().setData(pizza));
           }
@@ -183,7 +243,7 @@ public class PizzaPresenter {
 ---
 # [fit]How does Store route the request?
 ![fit inline](https://github.com/nytm/Store/raw/master/Images/store-2.jpg)
-
+##Fetch  also throttles multiple requests and broadcast result
 ---
 # [fit] Stream listens for events
 ```java
@@ -284,7 +344,7 @@ Parser<BufferedSource, Pizza> parser
 
 
 'com.nytimes.android:middleware:CurrentVersion'
-'com.nytimes.android:middleware:-jackson:CurrentVersion'
+'com.nytimes.android:middleware:jackson:CurrentVersion'
 'com.nytimes.android:middleware-moshi:CurrentVersion'
 
 ```
@@ -448,8 +508,146 @@ Store<Pizza, String> pizzaStore = StoreBuilder
        .fetcher(topping -> pizzaSource.fetch(topping))
        .parsers(parsers)
        .persister(persister)
-       .refreshOnStale()
+       .networkBeforeStale()
        .open();
+```
+---
+#[fit] Stores in the wild
+#[fit] Add few slides NYTimes examples of using stores
+---
+
+#[fit] Book's Best Sellers List
+```java
+
+public interface Api {
+    @GET("url")
+    Observable<BufferedSource> 
+    getBooks(@Path("category") String category);
+
+    @Provides @Singleton Store<BookResults, BarCode> 
+    provideBooks(FileSystem fileSystem, Gson gson, Api api) {
+        return StoreBuilder.<BarCode, BufferedSource, BookResults>
+                 parsedWithKey()
+                .fetcher(barCode -> api.getBooks(barCode.getKey()))
+                .persister(new SourcePersister(fileSystem))
+                .parser(new GsonSourceParser<>(gson, BookResults.class))
+                .open();
+    }
+
+    
+    public  class BookActivity{
+    ...
+     bookStore
+        .get(new BarCode(BookResults.class.getSimpleName(), category))
+        .subscribe();
+      }
+```
+---
+# Book Updater
+```java
+    @Provides @Singleton Store<BookResults, BarCode> 
+    provideBooks(FileSystem fileSystem, Gson gson, Api api) {
+        return StoreBuilder.<BarCode, BufferedSource, BookResults>
+                 parsedWithKey()
+                .fetcher(barCode -> api.getBooks(barCode.getKey()))
+                .persister(new SourcePersister(fileSystem))
+                .parser(new GsonSourceParser<>(gson, BookResults.class))
+                .open();
+    }
+
+    
+    public class AlarmHandler{
+      ...
+     bookStore
+        .fresh(new BarCode(BookResults.class.getSimpleName(), category))
+        .subscribe();
+      }
+```
+---
+#[fit] Data Available when you are
+#[fit] UI calls get, background services call fresh
+#[fit] If the background update fails UI will fallback to network
+---
+# Dependent Calls
+#[fit] Video Store Returns single videos
+#[fit] Playlist Store returns playlists without videos
+#      How do we combine?
+---
+#[fit] Using RxJava Operators
+```java
+public Observable<SectionFront> getSectionFront(@NonNull final String name) {
+        return feedStore.get()
+                .map(latestFeed -> latestFeed.getSectionOrBlog(name))
+                .flatMap(sectionMeta -> get(SectionFrontId.of(sectionMeta.orNull())));
+    }
+```
+---
+#[fit] Relationships by overriding
+#[fit] Get/Fetch
+---
+#[fit] Step 1: Create Video Store
+```java
+    Store<Video, Long> provideVideoStore(VideoFetcher fetcher,
+                                         Gson gson) {
+        return StoreBuilder.<Long, BufferedSource, Video>parsedWithKey()
+                .fetcher(fetcher)
+                .parser(GsonParserFactory
+                           .createSourceParser(gson, Video.class))
+                .open();
+    }
+```
+---
+#[fit] Step 2: Create Playlist Store
+```java
+    public class VideoPlaylistStore extends RealStore<Playlist, Long> {
+
+    final Store<CherryVideoEntity, Long> videoStore;
+
+    public VideoPlaylistStore(@NonNull PlaylistFetcher fetcher,
+                              @NonNull Store<CherryVideoEntity, Long> videoStore,
+                              @NonNull Gson gson) {
+        super(fetcher, NoopPersister.create(),
+                GsonParserFactory.createSourceParser(gson, Playlist.class));
+        this.videoStore = videoStore;
+    }
+```
+---
+#[fit] Step 3: Override `store.get()`
+```java
+public class VideoPlaylistStore extends RealStore<Playlist, Long> {
+
+    final Store<CherryVideoEntity, Long> videoStore;
+
+    @Override
+    public Observable<Playlist> get(@NonNull Long playlistId) {
+        return super.get(playlistId)
+                .flatMap(playlist -> Observable.from(playlist.videos())
+                        .concatMap(video -> videoStore.get(video.idValue()))
+                        .toList()
+                        .map(videos ->
+                                ImmutablePlaylist.builder().from(playlist)
+                                        .videos(videos)
+                                        .build()));
+    }
+```
+---
+#[fit] Listening for changes
+####Step 1: Subscribe to Store and Filter for what you need
+```java
+compositeSubscription.add(sectionFrontStore.subscribeUpdates()
+                .observeOn(scheduler)
+                .subscribeOn(Schedulers.io())
+                .filter(this::sectionIsInView)
+                .subscribe(this::handleSectionChange));
+```
+
+####Step 2: Kick off a fresh to that store
+```java
+    public Observable<SectionFront> refreshAll(@Nullable final String currentSFName) {
+        return feedStore.get()
+                         .flatMap(
+                         latestFeed -> refreshChanged(latestFeed));
+    }
 ```
 ---
 ## [fit]Bonus: How we made Store
