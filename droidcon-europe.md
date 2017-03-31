@@ -1,5 +1,5 @@
 # [fit] Store
-# [fit] _**Data Loading Made Easy**_
+# [fit] _**Data Loading Made Easy-ish**_
 # [fit] **Mike Nakhimovich - NY Times**
 ---
 
@@ -14,33 +14,19 @@
 # [fit] Why do we **:heart:** it?
 # [fit] Open Source Makes Life Easier
 ---
-#Developers Are Lazy
-# [fit] Open Source has simplified our lives
----
-#[fit] Networking is easier through better Fetchers
-# [fit] ~~**HTTPURLCONNECTION**~~ 
+#[fit] Networking is easier 
+#[fit] with better Fetchers
+## ~~HTTPURLCONNECTION~~ 
 # [fit] Volley, Retrofit, Okhttp
 ---
-#[fit] Data Storage/Persisters for Offline
-#[fit] ~~**Shared Preferences**~~ 
+#[fit] Offline Data Storage/Persisters 
+## ~~Shared Preferences~~ 
 #[fit] Firebase, Realm, SqlBrite/SqlDelight
 ---
 #[fit] Parsers for Transformations
 #[fit] ~~**JSONObject**~~ 
 #[fit] Jackson, Gson, Moshi
 ---
-# [fit] How does this 
-# [fit] **benefit** you?
-—
-# [fit] You don't need to reinvent the wheel
-# [fit] New Job,
-# [fit] **Same** Libraries
----
-#[fit] Shared knowledge in **community**
-# [fit] We have 
-# [fit] resources to look at
----
-
 #[fit] What's NOT Easy?
 #[fit] **DATA LOADING**
 #[fit] Everyone does it differently
@@ -76,9 +62,13 @@
 # New York Times built **Store** to simplify data loading
 ## github.com/NYTimes/store
 ---
-# [fit] **Goals**
+# **Problem**
+# **Set**
+emji
+
 ---
-# **Data** should survive configuration changes,
+
+### Data should survive configuration changes
 #[fit] agnostic of where it comes from or how it is needed
 ---
 ^Activities should deal with activity stuff, presenters should deal with presenting. Stores should be used to store data
@@ -89,7 +79,6 @@
 ---
 # Offline as a configuration
 #[fit]Caching should be the standard not the exception!
-#[fit] Developer should be able to make something cachable with 
 ---
 ^Our team becomes 50% bigger every summer
 #API should be **simple** enough for an intern to use, yet **robust** enough for every data load.
@@ -101,12 +90,13 @@
 # Need data, don't care if it fresh or cached
 ---
 #[fit] Fetch from outside
-## Want fresh data: 
-##**background updates** and **pull to refresh**
+##**background updates** & 
+##**pull to refresh**
 ---
+^Anytime we fetch an article we want comments too
 # Data is dependent on each other,
-# Data calls should be too
-##For example: Anytime we fetch an article we want comments too
+# Data Loading should be too
+
 ---
 # [fit] Requests need to be 
 #[fit]**async** & **reactive**
@@ -128,22 +118,22 @@
 ---
 
 # **Why Repository?**
-# Maximize the amount of code that can be tested with automation by isolating the data layer
+## Maximize the amount of code that can be tested with automation by isolating the data layer
 ---
 # **Why Repository?**
 #Makes it easier to have multiple devs working on same feature
 ---
 # **Why Repository?**
-# Data source from many locations will be centrally managed with consistent access rules and logic
+## Data source from many locations will be centrally managed with consistent access rules and logic
 ---
 
-# **Our Implementation**
-## https://github.com/NYTimes/Store
-###(How'd we do?)
+## Our Implementation
+### https://github.com/NYTimes/Store
+####(How'd we do?)
 —
 # What is a **Store?**
+^ Stores bring together all those great open source libs from earlier
 ## A class that manages the fetching, parsing, and storage of a specific data model
-#### Stores bring together all those great open source libs from earlier
 ---
 # [fit]**You Tell a Store:**
 #  What to **fetch**
@@ -236,7 +226,7 @@ public class PizzaPresenter {
    void onPTR() {
       store.fetch("cheese")
               .subscribe(pizza ->
-              	getView().setData(pizza));
+                getView().setData(pizza));
           }
       }
 ```
@@ -253,7 +243,7 @@ public class PizzaBar {
        store.stream()
        .subscribe(pizza ->
           getView().showSnackBar(pizza));
-	}
+  }
 }
 ```
 ---
@@ -267,14 +257,14 @@ public class PriceList {
    Store<List<Double>, String> prices;
    void pizzaPrices() {
        store
-          .getRefreshing("prices")
+          .getRefreshing("pizza")
           .subscribe(prices -> display(prices));
       }
 
-  void updatePrices(){
-	api.updatePizzaPrices(prices)
-	   .doOnNext(response->store.clear("pizza");
-	}
+  void updatePrices(Prices prices){
+  api.updatePizzaPrices(prices)
+     .doOnNext(response->store.clear("pizza");
+  }
 
 ```
 ---
@@ -295,7 +285,7 @@ Persister<Raw, Key>
    Observable<Boolean> write(Key key, Raw raw);
 
 Parser<Raw, Parsed> extends Func1<Raw, Parsed>
- 	  Parsed call(Raw raw);
+    Parsed call(Raw raw);
 ```
 ---
 ## [fit]**Fetcher defines how a Store will get new data**
@@ -442,7 +432,7 @@ parsers.add(GsonParserFactory.createSourceParser(gson, Pizza.class));
 StoreBuilder<String,BufferedSource,Pizza> parsedWithKey()
        .fetcher(topping -> pizzaSource.fetch(topping))
        .persister( FileSystemRecordPersister.create( fileSystem,
-        	key -> "prefix"+key, 1, TimeUnit.DAYS))
+          key -> "prefix"+key, 1, TimeUnit.DAYS))
 
 ```
 ---
@@ -455,7 +445,7 @@ parsers.add(GsonParserFactory.createSourceParser(gson, Pizza.class));
 StoreBuilder<String,BufferedSource,Pizza> parsedWithKey()
        .fetcher(topping -> pizzaSource.fetch(topping))
        .persister( FileSystemRecordPersister.create( fileSystem,
-        	key -> "prefix"+key, 1, TimeUnit.DAYS))
+          key -> "prefix"+key, 1, TimeUnit.DAYS))
        .parsers(parsers)
 ```
 ---
@@ -469,7 +459,7 @@ Store<Pizza, String> pizzaStore =
 StoreBuilder<String,BufferedSource,Pizza> parsedWithKey()
        .fetcher(topping -> pizzaSource.fetch(topping))
        .persister( FileSystemRecordPersister.create( fileSystem,
-			key -> "prefix"+key, 1, TimeUnit.DAYS))
+      key -> "prefix"+key, 1, TimeUnit.DAYS))
        .parsers(parsers)
        .open();
 ```
@@ -523,27 +513,8 @@ public interface Api {
     @GET("url")
     Observable<BufferedSource> 
     getBooks(@Path("category") String category);
-
-    @Provides @Singleton Store<BookResults, BarCode> 
-    provideBooks(FileSystem fileSystem, Gson gson, Api api) {
-        return StoreBuilder.<BarCode, BufferedSource, BookResults>
-                 parsedWithKey()
-                .fetcher(barCode -> api.getBooks(barCode.getKey()))
-                .persister(new SourcePersister(fileSystem))
-                .parser(new GsonSourceParser<>(gson, BookResults.class))
-                .open();
-    }
-
-    
-    public  class BookActivity{
-    ...
-     bookStore
-        .get(new BarCode(BookResults.class.getSimpleName(), category))
-        .subscribe();
-      }
 ```
 ---
-# Book Updater
 ```java
     @Provides @Singleton Store<BookResults, BarCode> 
     provideBooks(FileSystem fileSystem, Gson gson, Api api) {
@@ -555,11 +526,24 @@ public interface Api {
                 .open();
     }
 
+ ```
+ ---
+ ```java   
+    public  class BookActivity{
+    ...
+     bookStore
+        .get(new BarCode(BookResults.class.getSimpleName(), category))
+        .subscribe();
+      }
+```
+---
+# Book Updater
+```java
     
     public class AlarmHandler{
       ...
      bookStore
-        .fresh(new BarCode(BookResults.class.getSimpleName(), category))
+        .fresh(new BarCode("Books", category))
         .subscribe();
       }
 ```
